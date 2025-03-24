@@ -78,59 +78,64 @@ const Home = () => {
     };
 
     if (loading) {
-        return <div>Loading...</div>; // 아니면 예쁜 로딩 스피너 컴포넌트 넣어도 좋고!
+        return <div>Loading...</div>;
     }
 
     if (error) {
-        return <div>Error: {error}</div>; // 사용자에게 친절하게 에러 메시지 보여주기!
-    }
-
-    if (!storageFiles || storageFiles?.length === 0) {
-        return <div>No files found.</div>; // 파일 없을 때 "파일이 없습니다" 같은 메시지 보여주기!
+        return <div>Error: {error}</div>;
     }
 
     return (
         <div>
             {renderHeader()}
-            <div className="flex flex-col overflow-y-auto h-screen gap-y-2">
-                {/* ✨ 파일 목록 렌더링! */}
-                {storageFiles?.map((file: StorageFile) => (
-                    <div key={file.id} className="bg-white rounded-lg shadow p-4 flex items-center justify-between">
-                        <div className="flex items-center space-x-4">
-                            <DocumentIcon className="w-8 h-8 text-gray-800">
-                            </DocumentIcon>
 
-                            {/* 파일명과 업로드 날짜 */}
-                            <div>
-                                <h3 className="font-medium">{file.name}</h3>
-                                <p className="text-sm text-gray-500">{new Date(file.createdTime).toLocaleDateString()}</p>
+            {(!storageFiles || storageFiles.length === 0) ? (
+                // 파일이 없을 때 표시할 메시지
+                <div className="flex flex-col items-center justify-center h-64">
+                    <p className="text-gray-500 mb-4">파일이 없습니다.</p>
+                    <p className="text-gray-400 text-sm">아래 + 버튼을 눌러 파일을 업로드해보세요.</p>
+                </div>
+            ) : (
+                // 파일이 있을 때 파일 목록 표시
+                <div className="flex flex-col overflow-y-auto h-screen gap-y-2">
+                    {storageFiles.map((file: StorageFile) => (
+                        <div key={file.id} className="bg-white rounded-lg shadow p-4 flex items-center justify-between">
+                            <div className="flex items-center space-x-4">
+                                <DocumentIcon className="w-8 h-8 text-gray-800">
+                                </DocumentIcon>
+
+                                {/* 파일명과 업로드 날짜 */}
+                                <div>
+                                    <h3 className="font-medium">{file.name}</h3>
+                                    <p className="text-sm text-gray-500">{new Date(file.createdTime).toLocaleDateString()}</p>
+                                </div>
+                            </div>
+
+                            {/* 액션 버튼들 */}
+                            <div className="flex space-x-2">
+                                {/* 다운로드 */}
+                                <button className="p-2 hover:bg-gray-100 rounded-full"
+                                        onClick={() => downloadFile(`${API_BASE_URL}${file.downloadLink}`, file.name)}>
+                                    <ArrowDownTrayIcon className="w-5 h-5 ktext-gray-800">
+                                    </ArrowDownTrayIcon>
+                                </button>
+
+                                {/* 수정 버튼 (일단 기능 빼고 UI만) */}
+                                <button className="p-2 hover:bg-gray-100 rounded-full">
+                                    <PencilSquareIcon className="w-5 h-5 text-gray-800">
+                                    </PencilSquareIcon>
+                                </button>
+
+                                {/* 상세정보 버튼 (일단 기능 빼고 UI만) */}
+                                <button className="p-2 hover:bg-gray-100 rounded-full">
+                                    <InformationCircleIcon className="w-5 h-5 text-gray-800">
+                                    </InformationCircleIcon>
+                                </button>
                             </div>
                         </div>
-
-                        {/* 액션 버튼들 */}
-                        <div className="flex space-x-2">
-                            {/* 다운로드 */}
-                            <button className="p-2 hover:bg-gray-100 rounded-full"
-                                    onClick={() => downloadFile(`${API_BASE_URL}${file.downloadLink}`, file.name)}>
-                                <ArrowDownTrayIcon className="w-5 h-5 ktext-gray-800">
-                                </ArrowDownTrayIcon>
-                            </button>
-
-                            {/* 수정 버튼 (일단 기능 빼고 UI만) */}
-                            <button className="p-2 hover:bg-gray-100 rounded-full">
-                                <PencilSquareIcon className="w-5 h-5 text-gray-800">
-                                </PencilSquareIcon>
-                            </button>
-
-                            {/* 상세정보 버튼 (일단 기능 빼고 UI만) */}
-                            <button className="p-2 hover:bg-gray-100 rounded-full">
-                                <InformationCircleIcon className="w-5 h-5 text-gray-800">
-                                </InformationCircleIcon>
-                            </button>
-                        </div>
-                    </div>
-                ))}
-            </div>
+                    ))}
+                </div>
+            )}
 
             {/* 숨겨진 파일 input */}
             <input
