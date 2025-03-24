@@ -1,7 +1,7 @@
 // SignIn.tsx (수정 - useMutation 사용, 반환값 없이)
 import React, {useEffect, useState} from 'react';
 import {useMutation} from "../hooks/useMutation.ts";
-import {useNavigate} from "react-router-dom"; // useMutation 훅 임포트!
+import {Link, useNavigate} from "react-router-dom"; // useMutation 훅 임포트!
 
 interface SignInResponse {
     authScheme: string;
@@ -75,6 +75,15 @@ const SignIn = () => {
                         로그인
                     </button>
                 </form>
+                {/* 회원가입 UI 추가 */}
+                <div className="text-center mt-6 text-sm">
+                    <p className="text-gray-600">
+                        회원이 아니신가요?{" "}
+                        <Link to="/sign-up" className="text-blue-500 hover:text-blue-700 font-medium">
+                            회원가입
+                        </Link>
+                    </p>
+                </div>
             </div>
         </div>
     );

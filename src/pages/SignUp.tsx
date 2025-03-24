@@ -1,7 +1,7 @@
 // Register.tsx
 import React, { useEffect, useState } from 'react';
 import { useMutation } from "../hooks/useMutation.ts";
-import { useNavigate } from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 
 interface SignInRequest {
     email: string;
@@ -139,16 +139,12 @@ const SignUp = () => {
 
                     <div className="text-center mt-2">
                         <span className="text-gray-600">이미 계정이 있으신가요?</span>{' '}
-                        <a
-                            href="/login"
+                        <Link
+                            to="/sign-in"
                             className="text-blue-500 hover:text-blue-700"
-                            onClick={(e) => {
-                                e.preventDefault();
-                                navigate('/login');
-                            }}
                         >
                             로그인하기
-                        </a>
+                        </Link>
                     </div>
                 </form>
             </div>

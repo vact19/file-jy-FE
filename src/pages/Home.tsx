@@ -146,7 +146,7 @@ const Home = () => {
             />
 
             {/* 파일 업로드 Floating Button */}
-            <button className="absolute bottom-24 right-5 btn btn-primary btn-circle"
+            <button className="absolute bottom-36 right-5 btn btn-primary btn-circle"
                     onClick={handleFileUploadButtonClick}
                     disabled={uploadLoading}
             >
