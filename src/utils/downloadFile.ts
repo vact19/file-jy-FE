@@ -3,7 +3,7 @@ const downloadFile = async (downloadLink: string, fileName: string) => {
         const accessToken = localStorage.getItem('accessToken'); // localStorage 에서 Access Token 가져오기
         const response = await fetch(downloadLink, { // 다운로드 링크 전체 URL 사용
             headers: {
-                'Authorization': `Bearer ${accessToken}`, // 인증 헤더 추가!
+                'Authorization': `${accessToken}`, // 인증 헤더 추가!
             },
         });
 
