@@ -58,7 +58,7 @@ const SignUp = () => {
                 alert('회원가입에 실패했습니다: ' + error);
             } else if (data) {
                 alert(`${data.user.username} 회원가입이 완료되었습니다! 로그인해주세요.`);
-                navigate('/login');
+                navigate('/sign-in');
             }
         }
     }, [data, loading, error, navigate]);
