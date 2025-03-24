@@ -3,7 +3,7 @@ import React, {useEffect, useState} from 'react';
 import {useMutation} from "../hooks/useMutation.ts";
 import {useNavigate} from "react-router-dom"; // useMutation 훅 임포트!
 
-interface TokenDto {
+interface SignInResponse {
     authScheme: string;
     accessToken: string;
     accessTokenExp: string;
@@ -12,10 +12,15 @@ interface TokenDto {
     username: string;
 }
 
+interface SignInRequest {
+    email: string;
+    password: string;
+}
+
 const SignIn = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const { mutate, data, loading, error } = useMutation<TokenDto>();
+    const { mutate, data, loading, error } = useMutation<SignInRequest, SignInResponse>();
     const navigate = useNavigate(); // ✨ useNavigate 훅 사용!
 
     const handleSubmit = async (e: React.FormEvent) => {

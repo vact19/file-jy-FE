@@ -22,7 +22,7 @@ const SignUp = () => {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [passwordError, setPasswordError] = useState<string | null>(null);
 
-    const { mutate, data, loading, error } = useMutation<SignInResponse>();
+    const { mutate, data, loading, error } = useMutation<SignInRequest, SignInResponse>();
     const navigate = useNavigate();
 
     // 비밀번호 확인 유효성 검사
@@ -48,7 +48,6 @@ const SignUp = () => {
             return;
         }
         const signInRequest: SignInRequest = {email, username, password};
-
         await mutate('/users', 'POST', signInRequest);
     };
 

@@ -7,8 +7,8 @@ export enum ContentType {
     MultipartFormData = 'multipart/form-data',
 }
 
-export const useMutation = <T>() => { // 제네릭 타입 T는 응답 데이터 타입
-    const [data, setData] = useState<T | null>(null);
+export const useMutation = <TRequest = never, TResponse = never>() => { // 제네릭 타입 T는 응답 데이터 타입
+    const [data, setData] = useState<TResponse | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate();
@@ -16,7 +16,7 @@ export const useMutation = <T>() => { // 제네릭 타입 T는 응답 데이터 
     const mutate = async (
         endpoint: string
         , method: 'POST' | 'PUT' | 'DELETE'
-        , body?: any
+        , body?: TRequest
         , contentType?: ContentType
     ) => { // 요청 실행 함수 (mutate)
         setLoading(true);
@@ -44,7 +44,7 @@ export const useMutation = <T>() => { // 제네릭 타입 T는 응답 데이터 
             const response = await fetch(`${API_BASE_URL}${endpoint}`, {
                 method,
                 headers, // ✨ headers 적용
-                body: requestBody,
+                body: requestBody as  | undefined,
             });
 
             if (!response.ok) {
@@ -54,7 +54,7 @@ export const useMutation = <T>() => { // 제네릭 타입 T는 응답 데이터 
                 const errorData = await response.json(); // 에러 응답도 JSON으로 파싱
                 throw new Error(errorData.message || 'Mutation failed'); // 에러 메시지 사용
             }
-            const responseData: ResponseData<T> = await response.json();
+            const responseData: ResponseData<TResponse> = await response.json();
             setData(responseData.data);
         } catch (error) {
             if (error instanceof Error) {
