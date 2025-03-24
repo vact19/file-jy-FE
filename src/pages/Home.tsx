@@ -28,7 +28,7 @@ const Home = () => {
 
     const storageId = data?.storageId;
 
-    const { mutate: uploadFileMutation, loading: uploadLoading, error: uploadError} = useMutation();
+    const { mutate: uploadFileMutation, loading: uploadLoading, error: uploadError} = useMutation<FormData>();
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const renderHeader = (): React.JSX.Element => {
