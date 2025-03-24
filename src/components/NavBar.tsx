@@ -22,7 +22,7 @@ const Navbar = () => {
             </Link>
 
             {/* 저장소 이름 */}
-            <div className="text-xl font-bold text-center flex-grow">Web Storage</div>
+            <div className="text-xl font-bold text-center flex-grow">파일줘요</div>
 
             {/* 설정 버튼 */}
 
