@@ -13,19 +13,19 @@ interface SignInResponse {
 }
 
 interface SignInRequest {
-    email: string;
+    loginId: string;
     password: string;
 }
 
 const SignIn = () => {
-    const [email, setEmail] = useState('');
+    const [loginId, setLoginId] = useState('');
     const [password, setPassword] = useState('');
     const { mutate, data, loading, error } = useMutation<SignInRequest, SignInResponse>();
     const navigate = useNavigate(); // ✨ useNavigate 훅 사용!
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        await mutate('/users/sign-in', 'POST', { email, password });
+        await mutate('/users/sign-in', 'POST', { loginId: loginId, password });
     };
 
     useEffect(() => {
@@ -45,15 +45,15 @@ const SignIn = () => {
                 <h1 className="text-2xl font-bold text-center mb-6">로그인</h1>
                 <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                     <div>
-                        <label htmlFor="email" className="block text-gray-700 text-sm font-bold mb-2">
-                            이메일
+                        <label htmlFor="text" className="block text-gray-700 text-sm font-bold mb-2">
+                            ID
                         </label>
                         <input
-                            type="email"
-                            id="email"
+                            type="text"
+                            id="text"
                             className="bg-sky-100 shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                            value={loginId}
+                            onChange={(e) => setLoginId(e.target.value)}
                         />
                     </div>
                     <div>

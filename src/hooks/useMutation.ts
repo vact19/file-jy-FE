@@ -15,7 +15,7 @@ export const useMutation = <TRequest = never, TResponse = never>() => { // 제�
 
     const mutate = async (
         endpoint: string
-        , method: 'POST' | 'PUT' | 'DELETE'
+        , method: 'POST' | 'PUT' | 'DELETE' | 'PATCH'
         , body?: TRequest
         , contentType?: ContentType
     ) => { // 요청 실행 함수 (mutate)
@@ -56,6 +56,7 @@ export const useMutation = <TRequest = never, TResponse = never>() => { // 제�
             }
             const responseData: ResponseData<TResponse> = await response.json();
             setData(responseData.data);
+            return responseData.data;
         } catch (error) {
             if (error instanceof Error) {
                 setError(error.message);

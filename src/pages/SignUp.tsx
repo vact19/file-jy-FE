@@ -4,7 +4,7 @@ import { useMutation } from "../hooks/useMutation.ts";
 import {Link, useNavigate} from "react-router-dom";
 
 interface SignInRequest {
-    email: string;
+    loginId: string;
     username: string;
     password: string;
 }
@@ -16,7 +16,7 @@ interface SignInResponse {
 }
 
 const SignUp = () => {
-    const [email, setEmail] = useState('');
+    const [loginId, setLoginId] = useState('');
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -38,7 +38,7 @@ const SignUp = () => {
         e.preventDefault();
 
         // 폼 유효성 검사
-        if (!email || !username || !password) {
+        if (!loginId || !username || !password) {
             alert('모든 필드를 입력해주세요.');
             return;
         }
@@ -47,7 +47,7 @@ const SignUp = () => {
             alert('비밀번호가 일치하지 않습니다.');
             return;
         }
-        const signInRequest: SignInRequest = {email, username, password};
+        const signInRequest: SignInRequest = {loginId, username, password};
         await mutate('/users', 'POST', signInRequest);
     };
 
@@ -69,15 +69,15 @@ const SignUp = () => {
                 <h1 className="text-2xl font-bold text-center mb-6">회원가입</h1>
                 <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                     <div>
-                        <label htmlFor="email" className="block text-gray-700 text-sm font-bold mb-2">
-                            이메일
+                        <label htmlFor="text" className="block text-gray-700 text-sm font-bold mb-2">
+                            ID
                         </label>
                         <input
-                            type="email"
-                            id="email"
+                            type="text"
+                            id="loginId"
                             className="bg-sky-100 shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                            value={loginId}
+                            onChange={(e) => setLoginId(e.target.value)}
                             required
                         />
                     </div>

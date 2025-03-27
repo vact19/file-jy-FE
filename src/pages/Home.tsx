@@ -1,8 +1,8 @@
-import React, {useRef} from 'react';
+import React, {useRef, useState} from 'react';
 import { Location, useLocation } from 'react-router-dom';
 import { useFetch } from '../hooks/useFetch'
 
-import { ArrowDownTrayIcon, DocumentIcon, InformationCircleIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
+import { ArrowDownTrayIcon, DocumentIcon, InformationCircleIcon, PencilSquareIcon, LinkIcon, ShareIcon } from "@heroicons/react/24/outline";
 import downloadFile from "../utils/downloadFile.ts";
 import {PlusIcon} from "@heroicons/react/16/solid";
 import {ContentType, useMutation} from "../hooks/useMutation.ts";
@@ -14,6 +14,12 @@ interface StorageFile {
     lastModifiedTime: string;
     fileSize: string;
     downloadLink: string;
+    isSharing: boolean;
+}
+
+interface ToggleSharingResponse {
+    shareLink: string;
+    toggleResult: boolean;
 }
 
 interface StorageFileResponse {
@@ -25,10 +31,12 @@ const Home = () => {
     const location: Location = useLocation();
     const { data, loading, error, reload, API_BASE_URL } = useFetch<StorageFileResponse>('/storages/me/files');
     const storageFiles = data?.storageFiles;
+    const [copyStatus, setCopyStatus] = useState<{[key: string]: boolean}>({});
 
     const storageId = data?.storageId;
 
     const { mutate: uploadFileMutation, loading: uploadLoading, error: uploadError} = useMutation<FormData>();
+    const { mutate: toggleSharingMutation } = useMutation<never, ToggleSharingResponse>();
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const renderHeader = (): React.JSX.Element => {
@@ -77,6 +85,30 @@ const Home = () => {
         }
     };
 
+    const handleToggleSharing = async (fileId: string) => {
+        try {
+            const toggleSharingData = await toggleSharingMutation(`/files/${fileId}/toggle-sharing`, 'PATCH');
+            // toggleResult가 true일 때만 링크 복사 및 복사 상태 업데이트
+            if (toggleSharingData?.toggleResult) {
+                // 응답에서 shareLink 중 '/files'를 제거하고 도메인 추가
+                const cleanShareLink = `filejy.kr${toggleSharingData.shareLink.replace('/files', '')}`;
+
+                await navigator.clipboard.writeText(cleanShareLink);
+
+                setCopyStatus(prev => ({ ...prev, [fileId]: true }));
+
+                // 2초 후 복사 상태 초기화
+                setTimeout(() => {
+                    setCopyStatus(prev => ({ ...prev, [fileId]: false }));
+                }, 2000);
+            }
+            reload();
+        } catch (error) {
+            console.error("Toggle sharing failed:", error);
+        }
+    };
+
+
     if (loading) {
         return <div>Loading...</div>;
     }
@@ -104,19 +136,40 @@ const Home = () => {
                                 <DocumentIcon className="w-8 h-8 text-gray-800">
                                 </DocumentIcon>
 
-                                {/* 파일명과 업로드 날짜 */}
+                                {/* 파일명, 업로드 날짜, 파일 크기 */}
                                 <div>
                                     <h3 className="font-medium">{file.name}</h3>
-                                    <p className="text-sm text-gray-500">{new Date(file.createdTime).toLocaleDateString()}</p>
+                                    <div className="flex space-x-2 text-sm text-gray-500">
+                                        <p>{new Date(file.createdTime).toLocaleDateString()}</p>
+                                        <p>•</p>
+                                        <p>{file.fileSize}</p>
+                                    </div>
                                 </div>
                             </div>
 
                             {/* 액션 버튼들 */}
                             <div className="flex space-x-2">
+                                {/* 공유 토글 버튼 */}
+                                <button
+                                    className={`p-2 rounded-full ${file.isSharing ? 'bg-blue-100 text-blue-600' : 'hover:bg-gray-100 text-gray-800'}`}
+                                    onClick={() => handleToggleSharing(file.id)}
+                                    title={file.isSharing ? "공유 중지" : "공유 시작"}
+                                >
+                                    {copyStatus[file.id] ? (
+                                        <div className="text-xs font-medium">복사됨!</div>
+                                    ) : (
+                                        file.isSharing ? (
+                                            <LinkIcon className="w-5 h-5" />
+                                        ) : (
+                                            <ShareIcon className="w-5 h-5" />
+                                        )
+                                    )}
+                                </button>
+
                                 {/* 다운로드 */}
                                 <button className="p-2 hover:bg-gray-100 rounded-full"
                                         onClick={() => downloadFile(`${API_BASE_URL}${file.downloadLink}`, file.name)}>
-                                    <ArrowDownTrayIcon className="w-5 h-5 ktext-gray-800">
+                                    <ArrowDownTrayIcon className="w-5 h-5 text-gray-800">
                                     </ArrowDownTrayIcon>
                                 </button>
 
